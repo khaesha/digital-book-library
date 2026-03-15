@@ -10,7 +10,9 @@ from app.schemas.book import BookCreate, BookUpdate, BookResponse, BookOCRRespon
 # Import the async metadata fetching service
 from app.services.metadata import fetch_metadata
 # Import the OCR service
+# Import httpx for Google Books API call
 from app.services.ocr import extract_book_info_from_image
+import httpx
 # Import CRUD functions for Book from the repository layer
 import app.crud.book_repo as repo
 
@@ -21,6 +23,8 @@ router = APIRouter(prefix="/books", tags=["books"])
 # - Accepts an image file upload
 # - Extracts title/author using EasyOCR
 # - Fetches metadata using extracted title
+
+# Updated OCR endpoint to use Google Books API
 @router.post("/ocr", response_model=BookOCRResponse)
 async def ocr_book_cover(file: UploadFile = File(...), db: Session = Depends(get_db)):
     # Extract text from image
@@ -29,13 +33,15 @@ async def ocr_book_cover(file: UploadFile = File(...), db: Session = Depends(get
     author = ocr_result.get("author")
     raw_text = ocr_result.get("raw_text")
     metadata = None
-    # If a title was found, try to fetch metadata (simulate by searching for the title as a URL)
-    if title:
-        # Here, you might want to implement a smarter search or use a real metadata API
-        # For now, we just call fetch_metadata with the title as a search string (not a real URL)
-        # You may want to adapt fetch_metadata to support searching by title/author
+    # Use raw_text as the query for Google Books API
+    if raw_text:
+        clean_query = raw_text.replace(" ", "+")
+        url = f"https://www.googleapis.com/books/v1/volumes?q={clean_query}&maxResults=1"
         try:
-            metadata = await fetch_metadata(f"https://www.google.com/search?q={title}")
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url)
+                response.raise_for_status()
+                metadata = response.json()
         except Exception:
             metadata = None
     return BookOCRResponse(title=title, author=author, raw_text=raw_text, metadata=metadata)
