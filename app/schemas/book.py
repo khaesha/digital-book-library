@@ -23,3 +23,11 @@ class BookResponse(BaseModel):
 
     # This config allows Pydantic to create a model from ORM objects
     model_config = {"from_attributes": True}
+
+
+# Schema for OCR response (book cover image upload)
+class BookOCRResponse(BaseModel):
+    title: str | None
+    author: str | None
+    raw_text: str
+    metadata: dict | None = None  # Optionally include fetched metadata

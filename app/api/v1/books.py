@@ -6,14 +6,39 @@ from sqlalchemy.orm import Session
 # Import the get_db dependency to get a database session
 from app.database import get_db
 # Import Pydantic schemas for request and response validation
-from app.schemas.book import BookCreate, BookUpdate, BookResponse
+from app.schemas.book import BookCreate, BookUpdate, BookResponse, BookOCRResponse
 # Import the async metadata fetching service
 from app.services.metadata import fetch_metadata
+# Import the OCR service
+from app.services.ocr import extract_book_info_from_image
 # Import CRUD functions for Book from the repository layer
 import app.crud.book_repo as repo
 
 # Create a router for all book-related endpoints, with a URL prefix and tag for docs
+from fastapi import UploadFile, File
 router = APIRouter(prefix="/books", tags=["books"])
+# Endpoint to extract book info from an uploaded image (OCR)
+# - Accepts an image file upload
+# - Extracts title/author using EasyOCR
+# - Fetches metadata using extracted title
+@router.post("/ocr", response_model=BookOCRResponse)
+async def ocr_book_cover(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    # Extract text from image
+    ocr_result = extract_book_info_from_image(file)
+    title = ocr_result.get("title")
+    author = ocr_result.get("author")
+    raw_text = ocr_result.get("raw_text")
+    metadata = None
+    # If a title was found, try to fetch metadata (simulate by searching for the title as a URL)
+    if title:
+        # Here, you might want to implement a smarter search or use a real metadata API
+        # For now, we just call fetch_metadata with the title as a search string (not a real URL)
+        # You may want to adapt fetch_metadata to support searching by title/author
+        try:
+            metadata = await fetch_metadata(f"https://www.google.com/search?q={title}")
+        except Exception:
+            metadata = None
+    return BookOCRResponse(title=title, author=author, raw_text=raw_text, metadata=metadata)
 
 # Endpoint to add a new book
 # - Accepts a BookCreate payload (just a URL)
