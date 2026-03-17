@@ -1,8 +1,9 @@
-
 # Import httpx for making async HTTP requests
 import httpx
+
 # Import BeautifulSoup for parsing HTML
 from bs4 import BeautifulSoup
+
 
 # Asynchronously fetches the title and description from a web page
 # Returns a dictionary with 'title' and 'description' keys

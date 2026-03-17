@@ -3,6 +3,7 @@ Rate Limiting Middleware
 Limits requests per IP address. Returns 429 if limit exceeded.
 Note: Uses in-memory store; for production, use Redis or similar.
 """
+
 import time
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -17,6 +18,7 @@ TIME_WINDOW = 60  # seconds
 _request_times: Dict[str, list] = {}
 _lock = threading.Lock()
 
+
 class RateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         client_ip = request.client.host
@@ -28,10 +30,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             if len(times) >= RATE_LIMIT:
                 return JSONResponse(
                     status_code=429,
-                    content={"detail": "Rate limit exceeded. Try again later."}
+                    content={"detail": "Rate limit exceeded. Try again later."},
                 )
             times.append(now)
             _request_times[client_ip] = times
         return await call_next(request)
+
 
 # Usage: Add to FastAPI app with app.add_middleware(RateLimitMiddleware)

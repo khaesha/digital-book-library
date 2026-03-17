@@ -11,3 +11,6 @@ pydantic
 easyocr
 Pillow
 python-multipart
+pytest
+pytest-cov
+ruff

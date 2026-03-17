@@ -1,0 +1,19 @@
+[tool.ruff]
+# The maximum line length (standard is 88, like Black)
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+# Enable these rule sets:
+# E/W: pycodestyle (style)
+# F: Pyflakes (bugs)
+# I: isort (import sorting)
+# B: flake8-bugbear (common design pitfalls)
+select = ["E", "W", "F", "I", "B"]
+
+# Specifically ignore these if they clash with FastAPI patterns
+ignore = ["B008"] # Allows function calls in defaults (needed for Depends())
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

@@ -1,17 +1,20 @@
-
 # Import datetime for timestamp fields
 from datetime import datetime
+
 # Import Pydantic's BaseModel for data validation and HttpUrl for URL type
 from pydantic import BaseModel, HttpUrl
+
 
 # Schema for creating a new book (request body)
 class BookCreate(BaseModel):
     url: HttpUrl  # Only the URL is required from the user
 
+
 # Schema for updating a book (partial update)
 class BookUpdate(BaseModel):
     title: str | None = None  # Optional title
     description: str | None = None  # Optional description
+
 
 # Schema for returning a book (response body)
 class BookResponse(BaseModel):

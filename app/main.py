@@ -1,13 +1,15 @@
-
-
 # Import FastAPI class to create the web application
 from fastapi import FastAPI
+
 # Import the SQLAlchemy engine and Base class for database setup
 from app.database import engine, Base
+
 # Import the router object from the books API module
 from app.api.v1.books import router as books_router
+
 # Import the healthcheck router
 from app.api.v1.healthcheck import router as healthcheck_router
+
 # Import custom middlewares
 from app.middlewares.error_catch import ErrorCatchMiddleware
 from app.middlewares.rate_limit import RateLimitMiddleware
@@ -29,7 +31,6 @@ app.add_middleware(ErrorCatchMiddleware)
 app.add_middleware(RateLimitMiddleware)
 # 3. Request logging (innermost)
 app.add_middleware(RequestLoggingMiddleware)
-
 
 
 # Register the books_router under the /api/v1 path prefix

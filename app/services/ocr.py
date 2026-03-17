@@ -3,6 +3,7 @@ from fastapi import UploadFile
 from PIL import Image
 import io
 
+
 # This function uses EasyOCR to extract text from an uploaded image file.
 def extract_book_info_from_image(image_file: UploadFile) -> dict:
     # Read the image bytes

@@ -1,12 +1,15 @@
-
 # Import datetime for timestamp fields
 from datetime import datetime
+
 # SQLAlchemy column types
 from sqlalchemy import String, Text, DateTime
+
 # SQLAlchemy ORM typing and column definition helpers
 from sqlalchemy.orm import Mapped, mapped_column
+
 # Import the Base class for ORM models
 from app.database import Base
+
 
 # Define the Book table as a Python class
 class Book(Base):
