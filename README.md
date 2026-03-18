@@ -10,11 +10,15 @@ A FastAPI service to save and manage digital book links, with automated metadata
 - **NEW:** Upload a book cover image and extract title/author using OCR (EasyOCR)
 
 ## Requirements
+
 - Python 3.9+
 - Docker (for MySQL)
 - EasyOCR & Pillow (for OCR)
   - Install with: `pip install easyocr Pillow`
   - System dependencies may be required for OCR (e.g., `libglib2.0-0`, `libsm6`, `libxrender1`, `libxext6`)
+- Ruff (for linting and formatting)
+- pytest & pytest-cov (for testing and coverage)
+- pre-commit (for automated lint/test on commit)
 
 ## Quick Start
 
@@ -46,6 +50,29 @@ It is recommended to use a virtual environment:
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
+pre-commit install  # Enable git hooks for lint/test
+```
+### 6. Linting, Formatting, and Tests
+
+#### Lint and format code with Ruff
+```bash
+ruff check .
+ruff format .
+```
+
+#### Run all tests with coverage
+```bash
+pytest --cov=app
+```
+
+#### Pre-commit hooks
+- On every commit, pre-commit will:
+  - Run Ruff for linting and formatting
+  - Run all unit tests (pytest)
+  - Block the commit if any check fails
+- To run all hooks manually:
+```bash
+pre-commit run --all-files
 ```
 
 ### 5. Start the FastAPI app
@@ -71,6 +98,8 @@ uvicorn app.main:app --reload
 - Tables are auto-created on app startup (no migrations needed for simple use).
 - For production, consider using Alembic for migrations and secure your `.env` file. Never commit `.env` with secrets—use `.env.example` for sharing config templates.
 - For OCR, see [EasyOCR documentation](https://github.com/JaidedAI/EasyOCR) if you encounter system dependency issues.
+
+- For pre-commit to run pytest successfully, ensure pytest and all dependencies are installed in your environment. If you see 'Executable `pytest` not found', activate your virtualenv before committing, or adjust your pre-commit hook to use the correct Python environment.
 
 ---
 
