@@ -15,3 +15,5 @@ pytest
 pytest-cov
 ruff
 pre-commit
+pytest-mock
+pytest-asyncio

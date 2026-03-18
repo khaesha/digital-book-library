@@ -1,12 +1,9 @@
-import pytest
-import httpx
-from app.services import metadata
-
 import respx
 from httpx import Response
 
+from app.services import metadata
 
-@pytest.mark.asyncio
+
 @respx.mock
 async def test_fetch_metadata_success():
     url = "https://example.com"
@@ -25,7 +22,6 @@ async def test_fetch_metadata_success():
     assert result["description"] == "Test description here."
 
 
-@pytest.mark.asyncio
 @respx.mock
 async def test_fetch_metadata_no_description():
     url = "https://example.com"
@@ -38,7 +34,6 @@ async def test_fetch_metadata_no_description():
     assert result["description"] is None
 
 
-@pytest.mark.asyncio
 @respx.mock
 async def test_fetch_metadata_http_error():
     url = "https://example.com"
